@@ -3,16 +3,27 @@ package v6Pointer
 import "testing"
 
 func TestWallet(t *testing.T) {
-	wallet := Wallet{}
 
-	wallet.Deposit(10)
+	assertBalance := func(t *testing.T, wallet Wallet, want Bitcoin) {
+		got := wallet.Balance()
+		if got != want {
+			t.Errorf("got %s want %s", got, want)
 
-	got := wallet.Balance()
-	want := 10
-
-	if got != want {
-		t.Errorf("got %d want %d", got, want)
+		}
 	}
-}
 
-//do something change
+	t.Run("Deposit", func(t *testing.T) {
+		wallet := Wallet{}
+		wallet.Deposit(10)
+		assertBalance(t, wallet, Bitcoin(10))
+
+	})
+
+	t.Run("Withdraw", func(t *testing.T) {
+		wallet := Wallet{balance: Bitcoin(20)}
+		wallet.Withdraw(10)
+		assertBalance(t, wallet, Bitcoin(10))
+
+	})
+
+}
